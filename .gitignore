@@ -1,0 +1,95 @@
+# ========================================================
+# Global ignores
+# ========================================================
+*.log
+*.pid
+*.sock
+.DS_Store
+Thumbs.db
+.env
+.env.*.local
+
+# ========================================================
+# Node modules & dependencies
+# ========================================================
+node_modules/
+**/node_modules/
+
+# ========================================================
+# Output, builds & dist folders
+# ========================================================
+dist/
+**/dist/
+build/
+**/build/
+tmp/
+temp/
+**/.tmp/
+**/.temp/
+**/tmp/
+**/temp/
+
+# ========================================================
+# Logs & Coverage
+# ========================================================
+logs/
+**/logs/
+coverage/
+**/coverage/
+.nyc_output/
+**/.nyc_output/
+testem.log
+libpeerconnection.log
+
+# ========================================================
+# Angular (frontend/) specific
+# ========================================================
+**/.angular/
+**/.angular/cache/
+frontend/tmp/
+frontend/dist/
+frontend/out-tsc/
+frontend/.sass-cache/
+frontend/coverage/
+frontend/testem.log
+frontend/libpeerconnection.log
+frontend/.vscode/
+frontend/.history/
+
+# ========================================================
+# NestJS (backend/) specific
+# ========================================================
+backend/.vscode/
+backend/.tmp/
+backend/.temp/
+backend/dist/
+backend/build/
+backend/logs/
+backend/.nyc_output/
+backend/.history/
+
+# ========================================================
+# IDEs & Editors
+# ========================================================
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# VSCode (only allow common shared files)
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# ========================================================
+# Nx specific
+# ========================================================
+**/.nx/cache
+**/.nx/workspace-data
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md

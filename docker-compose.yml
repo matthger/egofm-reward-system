@@ -1,0 +1,106 @@
+services:
+  dependencies:
+    build:
+      context: .
+      dockerfile: dependencies/Dockerfile
+    container_name: egofm_dependencies
+    working_dir: /app
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - nx_cache_dependencies:/app/.nx
+    environment:
+      - NX_DAEMON=true
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/docker/dev/Dockerfile
+    hostname: frontend
+    container_name: egofm_frontend
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - nx_cache_frontend:/app/.nx
+    working_dir: /app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - "4200"
+    depends_on:
+      - dependencies
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/docker/dev/Dockerfile
+    hostname: backend
+    container_name: egofm_backend
+    ports:
+      - "3000"
+      - "127.0.0.1:9229:9229"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - nx_cache_backend:/app/.nx
+    working_dir: /app
+    environment:
+      - NX_DAEMON=true
+      - DB_HOST=${POSTGRES_HOST}
+      - DB_PORT=${POSTGRES_PORT}
+      - DB_NAME=${POSTGRES_DB}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - NODE_ENV=development
+      - JWT_SECRET=${JWT_SECRET}
+      - SEEDUSER_PASSWORD=${SEEDUSER_PASSWORD}
+      - TS_NODE_PROJECT=apps/backend/tsconfig.json
+    depends_on:
+      - db
+      - dependencies
+    networks:
+      - app-network
+
+  db:
+    image: postgres:17.5
+    container_name: egofm_db
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:stable
+    container_name: egofm_nginx
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "127.0.0.1:80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app-network
+
+volumes:
+  node_modules:
+  pgdata:
+  nx_cache_dependencies:
+  nx_cache_frontend:
+  nx_cache_backend:
+
+networks:
+  app-network:
+    driver: bridge

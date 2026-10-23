@@ -1,0 +1,46 @@
+.reward-card {
+  width: 100%;
+  max-width: 500px;
+
+  .task-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &.completed {
+      opacity: 0.6;
+      padding-block: 0.5rem;
+    }
+
+    .task-info {
+      display: flex;
+      justify-content: space-between;
+      flex-grow: 1;
+      margin-right: 1rem;
+    }
+
+    .task-description {
+      font-weight: 500;
+    }
+
+    .task-amount {
+      font-weight: bold;
+      color: var(--p-primary-color);
+    }
+  }
+}
+
+:host ::ng-deep {
+  .p-avatar {
+    border: 2px solid var(--p-primary-color);
+  }
+
+  .p-message-text {
+    width: 100%;
+  }
+}

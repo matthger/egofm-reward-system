@@ -1,0 +1,74 @@
+<p-card [style]="{ padding: '0.5rem', 'margin-top': '1rem' }">
+  <div class="flex flex-column justify-content-center align-items-center text-center gap-3 h-full">
+    <span class="text-white font-semibold">Tages-Streak</span>
+
+    <img
+      src="/assets/images/ego-character.png"
+      alt="Now Playing Cover"
+      class="w-full mx-auto mt-4"
+    />
+
+    <ng-container *ngIf="streakInfo$ | async as streak">
+      <div class="flex justify-content-center align-items-center gap-2 mt-2">
+        <i class="pi pi-bolt text-2xl text-yellow-500"></i>
+        <span class="text-white text-xl font-bold">
+          {{ streak.currentStreak }} Tag{{ streak.currentStreak !== 1 ? 'e' : '' }} in Folge
+        </span>
+      </div>
+
+      <div class="surface-card p-2" style="max-width: 400px">
+        <div class="flex flex-column gap-3">
+          <!-- Subtitle -->
+          <p class="text-color-secondary m-0">Nicht, dass du dich verbrennst!</p>
+          <!-- Progress section -->
+          <div class="mt-3">
+            <p *ngIf="streak.currentReward > 0" class="m-0 mb-2">
+              Du hast für dein tägliches Auftauchen bereits
+              <span class="inline-flex align-items-center gap-1">
+                <span class="font-bold text-primary">{{
+                  getTotalReward(streak.currentStreak)
+                }}</span>
+                <img src="assets/icons/egofm-reward-coin.png" alt="Coin" width="14" height="14" />
+              </span>
+              erhalten.
+            </p>
+
+            <p class="m-0" *ngIf="streak.nextThreshold">
+              Halte <span *ngIf="streak.currentReward > 0">noch weitere</span>
+              <span class="font-bold">
+                {{ streak.nextThreshold - streak.currentStreak }} Tag(e)
+              </span>
+              durch für zusätzliche
+              <span class="font-bold text-primary"
+                >{{ streak.nextReward }}
+                <img
+                  src="assets/icons/egofm-reward-coin.png"
+                  alt="Coin"
+                  width="14"
+                  height="14"
+                /> </span
+              >!
+            </p>
+          </div>
+
+          <!-- Streak indicator -->
+          <div class="flex flex-wrap gap-2 justify-content-center">
+            <p-avatar
+              *ngFor="let day of [].constructor(7); let i = index"
+              [style]="{
+                'min-width': '28px',
+                'min-height': '28px',
+                'flex-shrink': '0'
+              }"
+              [styleClass]="i + 1 <= getStreakProgressInCycle(streak) ? 'bg-primary' : 'bg-surface'"
+              size="normal"
+              shape="circle"
+            >
+              <i class="pi pi-check text-xs" *ngIf="i + 1 <= getStreakProgressInCycle(streak)"></i>
+            </p-avatar>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</p-card>

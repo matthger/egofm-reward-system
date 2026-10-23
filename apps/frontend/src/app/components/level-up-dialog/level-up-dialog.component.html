@@ -1,0 +1,63 @@
+<div class="text-center p-4">
+  <img
+    ngSrc="{{ newLevel.imageUrl }}"
+    [alt]="newLevel.name"
+    width="80"
+    height="80"
+    [ngClass]="{ 'animate__animated animate__flipInY': showAnimation }"
+  />
+  <h2
+    class="my-2"
+    [ngClass]="{ 'animate__animated animate__zoomIn animate__delay-1s': showAnimation }"
+  >
+    {{ newLevel.name }}
+  </h2>
+
+  <div
+    class="flex align-items-center justify-content-center text-sm mt-2 mb-3"
+    [ngClass]="{ 'animate__animated animate__fadeIn animate__delay-2s': showAnimation }"
+  >
+    <span class="pr-1">{{ getPointsRange() }}</span>
+    <img ngSrc="assets/icons/egofm-reward-coin.png" alt="Coin" width="14" height="14" />
+  </div>
+
+  <p
+    class="text-center"
+    [ngClass]="{ 'animate__animated animate__fadeIn animate__delay-3s': showAnimation }"
+  >
+    Wähle eine Belohnung aus:
+  </p>
+
+  <div
+    *ngIf="availableRewards$ | async as rewards"
+    class="flex flex-wrap justify-content-center gap-3"
+  >
+    <div
+      *ngFor="let reward of rewards"
+      class="reward-option shadow-4"
+      [ngClass]="{ 'animate__animated animate__flipInX animate__delay-4s': showAnimation }"
+      [class.selected]="reward === selectedReward"
+      (click)="selectReward(reward)"
+      role="button"
+      tabindex="0"
+    >
+      <p-avatar
+        [image]="getBadgeImageUrl(reward)"
+        size="xlarge"
+        shape="circle"
+        class="mb-2"
+        pTooltip="{{ reward.description }}"
+        tooltipPosition="top"
+        tooltipStyleClass="text-center"
+      />
+      <div class="text-center font-bold">{{ reward.title }}</div>
+    </div>
+  </div>
+
+  <div
+    class="flex justify-content-center gap-2 mt-4"
+    [ngClass]="{ 'animate__animated animate__fadeIn animate__delay-5s': showAnimation }"
+  >
+    <p-button label="Einlösen" [disabled]="!selectedReward" (click)="confirmSelection()"></p-button>
+  </div>
+</div>

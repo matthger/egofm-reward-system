@@ -1,0 +1,42 @@
+<p-menubar [model]="(items$ | async) ?? []">
+  <ng-template #start>
+    <img
+      ngSrc="assets/icons/egofm-logo-white.svg"
+      width="35"
+      height="15"
+      alt="Logo"
+      class="mr-3"
+      priority
+    />
+    <input type="text" pInputText placeholder="Search" class="w-36" />
+  </ng-template>
+
+  <ng-template #end>
+    <ng-container *ngIf="currentUser$ | async as currentUser; else showLogin">
+      <div class="flex items-center gap-2 relative">
+        <p-avatar
+          image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+          shape="circle"
+          styleClass="cursor-pointer"
+          (click)="menu.toggle($event)"
+        />
+      </div>
+    </ng-container>
+
+    <ng-template #showLogin>
+      <ng-container *ngIf="isLoading$ | async; else loginButton">
+        <p-skeleton width="5rem" height="2rem"></p-skeleton>
+      </ng-container>
+      <ng-template #loginButton>
+        <p-button
+          icon="pi pi-sign-in"
+          type="button"
+          label="Login"
+          class="p-button-sm"
+          routerLink="/login"
+        ></p-button>
+      </ng-template>
+    </ng-template>
+  </ng-template>
+</p-menubar>
+<p-menu #menu [popup]="true" [model]="userMenuItems"></p-menu>

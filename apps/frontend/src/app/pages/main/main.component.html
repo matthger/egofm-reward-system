@@ -1,0 +1,352 @@
+<div class="grid nested-grid mt-4">
+  <div class="col-12 md:col-2 flex justify-content-start">
+    <div class="w-full md:w-12rem">
+      <!-- Responsive width container -->
+      <p-card class="w-full" [style]="{ padding: '1rem', height: '100%' }">
+        <div class="text-sm font-semibold mb-3 text-center">Unsere Streams</div>
+
+        <div
+          class="flex flex-row md:flex-column flex-nowrap overflow-x-auto md:overflow-hidden gap-3 md:gap-0"
+          style="scrollbar-width: thin"
+        >
+          <!-- Horizontal scroll only on mobile -->
+
+          <div
+            *ngFor="let stream of streams"
+            class="flex flex-column align-items-center text-center flex-shrink-0 mb-0 md:mb-4 w-8rem md:w-auto"
+          >
+            <p-avatar
+              [image]="stream.icon"
+              size="xlarge"
+              shape="circle"
+              [style]="{
+                border: '3px solid white',
+                'box-shadow': '0 0 0 2px #95c02b'
+              }"
+            >
+            </p-avatar>
+
+            <div class="font-semibold mt-2">
+              {{ stream.name }}
+            </div>
+
+            <div
+              *ngIf="stream.status"
+              class="text-xs mt-1 font-medium"
+              [ngClass]="stream.statusColor"
+            >
+              {{ stream.status }}
+            </div>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+  <div class="col-12 md:col-8 flex justify-content-center">
+    <div style="max-width: 1200px; width: 100%">
+      <p-card [style]="{ padding: '0.5rem' }">
+        <div class="grid">
+          <div class="col-12 md:col-6">
+            <div
+              class="flex flex-column align-items-center justify-content-center gap-4 p-4 text-white border-round shadow-3"
+              style="
+                background: linear-gradient(rgba(44, 0, 62, 0.6), rgba(128, 0, 128, 0.6)),
+                  url('/assets/images/rap-cover.jpg');
+                background-size: cover;
+                background-position: center;
+              "
+            >
+              <p-avatar
+                image="assets/icons/rap-icon.png"
+                size="xlarge"
+                shape="circle"
+                [style]="{
+                  border: '3px solid white',
+                  'box-shadow': '0 0 0 2px #95c02b'
+                }"
+              ></p-avatar>
+
+              <div class="text-center">
+                <div class="text-lg font-bold">Jetzt Live</div>
+                <div class="text-sm text-green-300">Die Fantastischen Vier - MfG</div>
+              </div>
+
+              <div class="flex align-items-center justify-content-center gap-3">
+                <p-button
+                  icon="pi pi-step-backward"
+                  class="p-button-rounded p-button-secondary"
+                ></p-button>
+
+                <p-button
+                  [icon]="isPlaying ? 'pi pi-pause' : 'pi pi-play'"
+                  class="p-button-rounded p-button-lg"
+                  (click)="togglePlay()"
+                >
+                </p-button>
+
+                <p-button
+                  icon="pi pi-step-forward"
+                  class="p-button-rounded p-button-secondary"
+                ></p-button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 md:col-6" #rightColumn>
+            <ng-container *ngIf="currentUser$ | async as currentUser; else loginBanner">
+              <div class="flex flex-column gap-3" #contentWrapper>
+                <p-card class="bg-gray-900 text-white shadow-4" [style]="{ background: '#242729' }">
+                  <div class="text-primary font-semibold text-sm mb-1">Tägliche Aufgabe</div>
+                  <div class="text-base mb-2">Höre 1 Stunde egoFM</div>
+                  <div class="flex align-items-center gap-4">
+                    <div class="flex-grow-1">
+                      <p-progressBar
+                        [value]="60"
+                        [showValue]="false"
+                        styleClass="w-full h-1rem"
+                      ></p-progressBar>
+                    </div>
+                    <span class="inline-flex align-items-center gap-1">
+                      <span class="text-primary font-bold text-sm">+20</span>
+                      <img
+                        src="assets/icons/egofm-reward-coin.png"
+                        alt="Coin"
+                        width="14"
+                        height="14"
+                      />
+                    </span>
+                  </div>
+                </p-card>
+
+                <div class="flex gap-3">
+                  <p-card
+                    class="flex-1 bg-gray-900 text-white text-center shadow-2"
+                    [style]="{ background: '#242729' }"
+                  >
+                    <div class="flex justify-content-center align-items-center gap-2 h-full">
+                      <span class="font-semibold text-xl text-primary">{{
+                        currentUser.points | number
+                      }}</span>
+                      <img
+                        src="assets/icons/egofm-reward-coin.png"
+                        alt="Coin"
+                        width="20"
+                        height="20"
+                      />
+                    </div>
+                    <div class="text-sm text-gray-300 mt-1">Guthaben</div>
+                  </p-card>
+
+                  <p-card
+                    class="flex-1 bg-gray-900 text-white text-center shadow-2"
+                    [style]="{ background: '#242729' }"
+                  >
+                    <div class="text-lg font-semibold">{{ collectedBadgesCount$ | async }}</div>
+                    <div class="text-sm text-gray-300 mt-1">Badges</div>
+                  </p-card>
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-template #loginBanner>
+              <div
+                class="hidden md:block w-full h-full p-4 border-round shadow-3"
+                style="background: url('/assets/images/banner_login.png') center"
+              >
+                <div class="h-full gap-2 flex flex-column justify-content-end align-items-end">
+                  <img src="assets/images/egofm_logo.png" alt="EgoFM Logo" />
+                  <div class="p-1 text-xs font-bold mb-4 bg-black-alpha-90">
+                    Jetzt einloggen, Punkte sammeln und Belohnungen erhalten!
+                  </div>
+                  <p-button
+                    routerLink="/login"
+                    label="Login"
+                    icon="pi pi-sign-in"
+                    severity="primary"
+                  ></p-button>
+                  <p-button
+                    routerLink="/register"
+                    label="Registrieren"
+                    icon="pi pi-user-plus"
+                    severity="contrast"
+                  ></p-button>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </p-card>
+
+      <div class="col-12 my-3 mx-0 px-0">
+        <p-galleria
+          [value]="images"
+          [autoPlay]="true"
+          [showItemNavigators]="true"
+          [showThumbnails]="false"
+          [showIndicators]="false"
+          [showItemNavigatorsOnHover]="true"
+          [circular]="true"
+          [responsiveOptions]="responsiveOptions"
+          style="height: 20vh; display: flex; justify-content: center; align-items: center"
+        >
+          <ng-template pTemplate="item" let-item>
+            <img
+              [src]="item.image"
+              alt="Themenwoche"
+              style="max-height: 100%; max-width: 100%; object-fit: contain; margin: auto"
+            />
+          </ng-template>
+        </p-galleria>
+      </div>
+
+      <p-card>
+        <div class="flex">
+          <div class="flex-shrink-0 ml-2 mr-1 flex items-center" style="height: 100%">
+            <div
+              class="text-white font-bold text-7xl transform -rotate-90 origin-left whitespace-nowrap"
+              style="
+                line-height: 1;
+                max-width: 4rem;
+                transform-origin: left;
+                margin-top: 18rem;
+                margin-left: 1rem;
+              "
+            >
+              NEWS
+            </div>
+          </div>
+
+          <div class="card" style="width: calc(100% - 5rem); margin-left: -1rem">
+            <p-carousel
+              [value]="newsList"
+              [numVisible]="3"
+              [numScroll]="1"
+              [circular]="false"
+              [responsiveOptions]="responsiveOptions"
+              [showNavigators]="true"
+            >
+              <ng-template let-news pTemplate="item">
+                <div class="p-2 h-full">
+                  <p-card
+                    [style]="{
+                      overflow: 'hidden',
+                      background: '#242729',
+                      color: 'white',
+                      height: '100%'
+                    }"
+                  >
+                    <ng-template pTemplate="header">
+                      <img
+                        alt="News image"
+                        class="w-full h-48 object-cover"
+                        [src]="news.image || 'assets/default-news.jpg'"
+                        onerror="this.src='assets/default-news.jpg'"
+                      />
+                    </ng-template>
+                    <h3 class="text-lg font-bold">{{ news.title || 'No title' }}</h3>
+                    <p class="text-sm text-gray-600">{{ news.date | date : 'mediumDate' }}</p>
+                    <p class="line-clamp-3">{{ news.description || 'No description' }}</p>
+                    <ng-template pTemplate="footer">
+                      <div class="flex gap-2">
+                        <ng-container *ngIf="currentUser$ | async as currentUser">
+                          <p-button
+                            icon="pi pi-heart"
+                            [severity]="getButtonSeverity(news.liked)"
+                            [label]="news.likes.toString()"
+                            [outlined]="!news.liked"
+                            styleClass="p-button-sm"
+                            (click)="toggleLike(news, currentUser)"
+                          />
+                        </ng-container>
+                        <p-button
+                          icon="pi pi-share-alt"
+                          severity="secondary"
+                          [outlined]="true"
+                          styleClass="p-button-sm"
+                        />
+                        <p-button
+                          icon="pi pi-bookmark"
+                          severity="secondary"
+                          [outlined]="true"
+                          styleClass="p-button-sm"
+                        />
+                      </div>
+                    </ng-template>
+                  </p-card>
+                </div>
+              </ng-template>
+            </p-carousel>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+  <div class="col-12 md:col-2 flex md:justify-content-end justify-content-center">
+    <ng-container *ngIf="currentUser$ | async as currentUser; else topTenLeaderboard">
+      <div style="max-width: 300px; width: 100%">
+        <p-card header="Leaderboard">
+          <div class="flex flex-column h-full">
+            <!-- User Rank Header -->
+            <div class="flex justify-content-between align-items-center mb-3">
+              <div class="flex flex-column">
+                <ng-container *ngIf="currentUserRank$ | async as currentUserRank">
+                  <span *ngIf="currentUserRank !== -1" class="font-bold"
+                    >Dein Rang: #{{ currentUserRank }}</span
+                  >
+                </ng-container>
+
+                <!--
+                <span class="text-sm text-color-secondary">Top 5%</span>
+                -->
+              </div>
+            </div>
+
+            <app-level-progress
+              [showBarTitle]="true"
+              [showBarDescription]="false"
+            ></app-level-progress>
+
+            <p-divider></p-divider>
+
+            <!-- Leaderboard List -->
+            <div class="flex flex-column gap-2 flex-grow-1 overflow-y-auto">
+              <div
+                *ngFor="let leaderboardEntry of personalLeaderboard$ | async"
+                class="flex align-items-center p-2 border-round"
+                [ngClass]="{
+                  'border-1 border-primary text-primary':
+                    leaderboardEntry.username === currentUser.username
+                }"
+              >
+                <span class="font-bold w-2rem">{{ leaderboardEntry.rank }}</span>
+                <span class="flex-grow-1 font-medium">{{ leaderboardEntry.username }}</span>
+                <span class="font-bold">{{ leaderboardEntry.points | number }}</span>
+              </div>
+            </div>
+          </div>
+        </p-card>
+
+        <app-streak></app-streak>
+      </div>
+    </ng-container>
+
+    <ng-template #topTenLeaderboard>
+      <div style="max-width: 300px; width: 100%">
+        <p-card header="Leaderboard">
+          <div class="flex flex-column gap-2 flex-grow-1 overflow-y-auto">
+            <div
+              *ngFor="let leaderboardEntry of (fullLeaderboard$ | async)?.slice(0, 9)"
+              class="flex align-items-center p-2 border-round"
+            >
+              <span class="font-bold w-2rem">{{ leaderboardEntry.rank }}</span>
+              <span class="flex-grow-1 font-medium">{{ leaderboardEntry.username }}</span>
+              <span class="font-bold">{{ leaderboardEntry.points | number }}</span>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </ng-template>
+  </div>
+</div>

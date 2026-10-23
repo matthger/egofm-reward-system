@@ -1,0 +1,115 @@
+<ng-container *ngIf="earnedBadges$ | async as earned">
+  <ng-container *ngIf="lockedBadges$ | async as locked">
+    <p-card header="Badge Sammlung" styleClass="text-white shadow-2">
+      <div class="mt-2 grid">
+        <div class="col-12 flex flex-wrap gap-4 justify-content-center">
+          <ng-container *ngFor="let badge of earned">
+            <div
+              class="badge flex flex-column align-items-center text-center w-5rem cursor-pointer"
+              (click)="openBadgeDialog(badge, true)"
+              role="button"
+              tabindex="0"
+            >
+              <div class="avatar-wrapper mb-2">
+                <p-avatar shape="circle" size="xlarge" [image]="getBadgeImageUrl(badge, true)" />
+                <div class="avatar-overlay in-badge-collection"></div>
+              </div>
+              <small class="text-sm text-white font-semibold">{{ badge.title }}</small>
+            </div>
+          </ng-container>
+
+          <ng-container *ngFor="let badge of locked">
+            <div
+              class="badge flex flex-column align-items-center text-center w-5rem cursor-pointer"
+              (click)="openBadgeDialog(badge, false)"
+              role="button"
+              tabindex="0"
+            >
+              <div class="avatar-wrapper mb-2">
+                <p-avatar
+                  shape="circle"
+                  size="xlarge"
+                  [image]="getBadgeImageUrl(badge, false)"
+                ></p-avatar>
+
+                <div class="avatar-overlay in-badge-collection locked">
+                  <i class="pi pi-lock" style="font-size: 2rem"></i>
+                </div>
+              </div>
+
+              <small class="text-sm text-white">{{ badge.title }}</small>
+            </div>
+          </ng-container>
+
+          <div
+            *ngIf="
+              (isRewardLoading$ | async) === false && earned.length === 0 && locked.length === 0
+            "
+            class="text-center text-white"
+          >
+            Noch keine Badges verfügbar. Sammle weiter Punkte für die Chance auf coole Belohnungen!
+          </div>
+        </div>
+      </div>
+    </p-card>
+
+    <p-dialog
+      header="Badge Info"
+      [(visible)]="showBadgeDialog"
+      modal
+      [style]="{ width: '40rem', 'margin-inline': '1rem' }"
+      [draggable]="false"
+      [resizable]="false"
+      (onHide)="onDialogHide()"
+    >
+      <ng-container *ngIf="selectedBadge && (levels$ | async) as levels">
+        <ng-container *ngIf="currentUser$ | async as user">
+          <div class="flex justify-content-center">
+            <div class="avatar-wrapper mb-3">
+              <p-avatar
+                shape="circle"
+                size="xlarge"
+                [image]="getBadgeImageUrl(selectedBadge, isEarned)"
+              />
+              <div *ngIf="!isEarned" class="avatar-overlay locked">
+                <i class="pi pi-lock" style="font-size: 2rem"></i>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="text-white text-center mt-0 mb-2">
+            {{ selectedBadge.title }}
+          </h3>
+          <p class="opacity-60 text-center mt-0 mb-4">
+            {{ selectedBadge.description }}<br />
+            Belohnungspool: {{ findLevelForSelectedBadge(levels, selectedBadge) }}
+          </p>
+
+          <ng-container *ngIf="isEarned; else rewardWarning">
+            <p-divider></p-divider>
+            <div class="text-sm text-center">
+              <div>
+                <strong>Erhalten am:</strong>
+                {{ getClaimForBadge(user, selectedBadge.id)?.claimedAt | date : 'longDate' }}
+              </div>
+              <div>
+                <strong>Status:</strong>
+                {{ RewardClaimStatusLabel[getClaimForBadge(user, selectedBadge.id)?.status ?? ''] }}
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-template #rewardWarning>
+            <p-message
+              severity="warn"
+              [closable]="false"
+              styleClass="mt-3"
+              icon="pi pi-exclamation-circle"
+              >Diese Belohnung hast du noch nicht freigeschaltet.</p-message
+            >
+          </ng-template>
+        </ng-container>
+      </ng-container>
+    </p-dialog>
+  </ng-container>
+</ng-container>

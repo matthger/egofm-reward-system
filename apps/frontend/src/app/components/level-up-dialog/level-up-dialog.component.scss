@@ -1,0 +1,18 @@
+.reward-option {
+  cursor: pointer;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 2px solid #3a3a41;
+  background: #2a2a2f;
+  transition: border-color 0.2s ease;
+
+  &.selected {
+    border-color: var(--p-primary-color);
+    background: var(--p-primary-700);
+  }
+}
+
+:host ::ng-deep .p-avatar {
+  border: 2px solid var(--p-primary-color);
+  background: var(--p-card-background);
+}

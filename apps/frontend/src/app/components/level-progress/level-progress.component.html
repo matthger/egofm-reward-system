@@ -1,0 +1,103 @@
+<ng-container *ngIf="progress$ | async as progress">
+  <ng-container *ngIf="!progress.isMaxLevel; else maxLevel">
+    <div *ngIf="showBarTitle" class="flex align-items-center mb-2">
+      <img
+        ngSrc="{{ progress.currentLevel?.imageUrl }}"
+        alt="{{ progress.currentLevel?.name }}"
+        width="20"
+        height="20"
+      />
+      <span class="pl-2 flex-shrink-0">{{ progress.currentLevel?.name }}</span>
+    </div>
+    <div class="flex align-items-center gap-4">
+      <div *ngIf="showBarDescription" class="flex align-items-center">
+        <img
+          ngSrc="{{ progress.currentLevel?.imageUrl }}"
+          alt="{{ progress.currentLevel?.name }}"
+          width="20"
+          height="20"
+        />
+        <span class="pl-2 flex-shrink-0">{{ progress.currentLevel?.name }}</span>
+      </div>
+      <div
+        class="flex-grow-1 cursor-pointer"
+        role="button"
+        tabindex="0"
+        (click)="toggleLevelDialog()"
+        pTooltip="Alle Level anzeigen"
+        tooltipPosition="bottom"
+      >
+        <p-progressBar
+          [value]="progress.progress"
+          [showValue]="false"
+          styleClass="w-full h-1rem"
+        ></p-progressBar>
+      </div>
+      <div *ngIf="showBarDescription" class="flex align-items-center">
+        <img
+          ngSrc="{{ progress.nextLevel?.imageUrl }}"
+          alt="{{ progress.nextLevel?.name }}"
+          width="20"
+          height="20"
+        />
+        <span class="pl-2 flex-shrink-0">{{ progress.nextLevel?.name }}</span>
+      </div>
+    </div>
+    <div *ngIf="showBarTitle" class="mt-3">
+      <div>{{ progress.pointsToNextLevel }} Punkte zum nächsten Rang:</div>
+      <div class="font-bold">{{ progress.nextLevel?.name }}</div>
+    </div>
+  </ng-container>
+
+  <ng-template #maxLevel>
+    <div
+      class="flex flex-column gap-1 align-items-center justify-content-center text-primary cursor-pointer"
+      [ngClass]="{ 'md:flex-row md:gap-0': showBarDescription }"
+      role="button"
+      tabindex="0"
+      (click)="toggleLevelDialog()"
+    >
+      Höchstes Level erreicht:
+      <div class="flex align-items-center">
+        <img
+          ngSrc="{{ progress.currentLevel?.imageUrl }}"
+          alt="{{ progress.currentLevel?.name }}"
+          width="20"
+          height="20"
+        />
+        <span class="font-bold">{{ progress.currentLevel?.name }}</span
+        >.
+      </div>
+      <span [ngClass]="{ 'pl-1': showBarDescription }">Herzlichen Glückwunsch!</span>
+    </div>
+  </ng-template>
+</ng-container>
+
+<p-dialog
+  header="Alle Level"
+  [(visible)]="showLevelDialog"
+  modal
+  [style]="{ width: '40rem', 'margin-inline': '1rem' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="onDialogHide()"
+>
+  <div *ngIf="currentUser$ | async as currentUser">
+    <div *ngIf="levels$ | async as levels">
+      <div
+        *ngFor="let level of levels"
+        class="p-2 mb-2 border-round flex justify-content-between align-items-center text-sm"
+        [ngClass]="{
+          'border-primary border-2 bg-primary text-white': level.id === currentUser.levelId,
+          'surface-border border-1': level.id !== currentUser.levelId
+        }"
+      >
+        <div class="flex gap-2 align-items-center">
+          <img ngSrc="{{ level.imageUrl }}" alt="{{ level.name }}" width="20" height="20" />
+          <div class="font-bold">{{ level.name }}</div>
+        </div>
+        <div>{{ level.minPoints }} - {{ level.maxPoints ?? '∞' }} Punkte</div>
+      </div>
+    </div>
+  </div>
+</p-dialog>

@@ -1,0 +1,150 @@
+<div class="flex justify-content-center">
+  <div style="max-width: 1200px; width: 100%">
+    <div class="my-5">
+      <div class="text-2xl font-bold text-white">Mein Account</div>
+      <p>Verwalte hier deine persönlichen Daten und passe dein Profil an!</p>
+    </div>
+
+    <div class="mt-3">
+      <p-card header="Profil bearbeiten">
+        <form
+          [formGroup]="userForm"
+          (ngSubmit)="onSaveProfile()"
+          class="flex flex-column gap-3 mt-3"
+        >
+          <div class="flex flex-column gap-2">
+            <label for="username">Benutzername</label>
+            <input id="username" type="text" pInputText formControlName="username" />
+          </div>
+
+          <div class="flex flex-column gap-2">
+            <label for="email">E-Mail</label>
+            <input id="email" type="email" pInputText formControlName="email" />
+          </div>
+
+          <p-message *ngIf="userSuccess$ | async" severity="success" icon="pi pi-check-circle"
+            >Account erfolgreich geändert</p-message
+          >
+
+          <p-message
+            *ngIf="userError$ | async as error"
+            severity="error"
+            icon="pi pi-times-circle"
+            >{{ error }}</p-message
+          >
+
+          <div class="flex justify-content-end gap-2 pt-3">
+            <p-button
+              icon="pi pi-save"
+              type="submit"
+              label="Speichern"
+              [disabled]="!userForm.valid || userForm.pristine"
+            ></p-button>
+          </div>
+        </form>
+      </p-card>
+    </div>
+
+    <div class="grid mt-2 gap-1 lg:gap-0">
+      <div class="col-12 lg:col-6">
+        <p-card header="Passwort ändern">
+          <form
+            [formGroup]="passwordForm"
+            (ngSubmit)="onChangePassword()"
+            class="flex flex-column gap-3 mt-3"
+          >
+            <div class="flex flex-column gap-2">
+              <label for="oldPassword">Altes Passwort</label>
+              <p-password
+                id="oldPassword"
+                formControlName="oldPassword"
+                [toggleMask]="true"
+                [feedback]="false"
+                [style]="{ width: '100%' }"
+                [inputStyle]="{ width: '100%' }"
+              />
+            </div>
+
+            <div class="flex flex-column gap-2">
+              <label for="newPassword">Neues Passwort</label>
+              <p-password
+                id="newPassword"
+                formControlName="newPassword"
+                [toggleMask]="true"
+                [style]="{ width: '100%' }"
+                [inputStyle]="{ width: '100%' }"
+              />
+            </div>
+
+            <div class="flex flex-column gap-2">
+              <label for="newPasswordRepeat">Neues Passwort wiederholen</label>
+              <p-password
+                id="newPasswordRepeat"
+                formControlName="newPasswordRepeat"
+                [toggleMask]="true"
+                [style]="{ width: '100%' }"
+                [inputStyle]="{ width: '100%' }"
+              />
+              <p-message
+                *ngIf="
+                  passwordForm.hasError('passwordMismatch') &&
+                  passwordForm.get('newPassword')?.value &&
+                  passwordForm.get('newPasswordRepeat')?.value &&
+                  passwordForm.dirty
+                "
+                severity="error"
+                text="Passwörter stimmen nicht überein"
+                variant="simple"
+                size="small"
+              ></p-message>
+            </div>
+
+            <p-message *ngIf="passwordSuccess$ | async" severity="success" icon="pi pi-check-circle"
+              >Passwort erfolgreich geändert</p-message
+            >
+
+            <p-message
+              *ngIf="passwordError$ | async as error"
+              severity="error"
+              icon="pi pi-times-circle"
+              >{{ error }}</p-message
+            >
+
+            <div class="flex justify-content-end gap-2 pt-3">
+              <p-button
+                icon="pi pi-key"
+                type="submit"
+                label="Passwort ändern"
+                [disabled]="!passwordForm.valid"
+              ></p-button>
+            </div>
+          </form>
+        </p-card>
+      </div>
+      <div class="col-12 lg:col-6">
+        <p-card header="Weitere Informationen">
+          <div *ngIf="currentUser$ | async as user" class="flex flex-column gap-2 mt-3">
+            <div>
+              <strong>Geburtsdatum:</strong>
+              {{ user.birthDate | date : 'd. MMMM y' : undefined : 'de' }}
+            </div>
+            <div>
+              <strong>Mitglied seit:</strong>
+              {{ user.joinedAt | date : 'd. MMMM y' : undefined : 'de' }}
+            </div>
+          </div>
+          <div class="flex justify-content-end pt-3">
+            <p-button
+              icon="pi pi-trash"
+              label="Account löschen"
+              severity="danger"
+              (click)="onDeleteAccount()"
+            ></p-button>
+          </div>
+        </p-card>
+      </div>
+    </div>
+
+    <p-confirmDialog></p-confirmDialog>
+  </div>
+</div>

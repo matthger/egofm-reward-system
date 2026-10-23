@@ -1,0 +1,77 @@
+<p-input-group class="login-container">
+  <div class="login-wrapper">
+    <p-card header="Login" styleClass="login-card">
+      <form (ngSubmit)="login()" [formGroup]="loginForm" novalidate class="login-form">
+        <p-input-group>
+          <p-inputgroup-addon>
+            <i
+              [ngClass]="{ 'p-invalid': submitted && loginForm.controls['username'].invalid }"
+              class="pi pi-user"
+            ></i>
+          </p-inputgroup-addon>
+          <input
+            pInputText
+            name="username"
+            type="text"
+            placeholder="Benutzername"
+            formControlName="username"
+            [ngClass]="{ 'p-invalid': submitted && loginForm.controls['username'].invalid }"
+            required
+          />
+        </p-input-group>
+        <p-message
+          *ngIf="submitted && loginForm.controls['username'].invalid"
+          severity="error"
+          text="Benutzername ist ein Pflichtfeld."
+          variant="simple"
+          size="small"
+        ></p-message>
+
+        <p-input-group>
+          <p-inputgroup-addon>
+            <i
+              [ngClass]="{ 'p-invalid': submitted && loginForm.controls['password'].invalid }"
+              class="pi pi-lock"
+            ></i>
+          </p-inputgroup-addon>
+          <input
+            pInputText
+            type="password"
+            name="password"
+            placeholder="Passwort"
+            formControlName="password"
+            [ngClass]="{ 'p-invalid': submitted && loginForm.controls['password'].invalid }"
+            required
+          />
+        </p-input-group>
+        <p-message
+          *ngIf="submitted && loginForm.controls['password'].invalid"
+          severity="error"
+          text="Passwort ist ein Pflichtfeld."
+          variant="simple"
+          size="small"
+        ></p-message>
+
+        <div class="button-row">
+          <p-button type="submit" label="Login" icon="pi pi-sign-in" severity="primary"></p-button>
+          <p-button
+            type="button"
+            (onClick)="reset()"
+            label="Reset"
+            icon="pi pi-refresh"
+            severity="danger"
+          ></p-button>
+        </div>
+
+        <p-message *ngIf="error$ | async as error" severity="error" icon="pi pi-times-circle">{{
+          error
+        }}</p-message>
+
+        <div class="text-center">
+          Noch keinen Account? Registrieren Sie sich
+          <a routerLink="/register" class="text-primary">hier</a>.
+        </div>
+      </form>
+    </p-card>
+  </div>
+</p-input-group>

@@ -1,0 +1,111 @@
+<div class="register-container">
+  <div class="register-wrapper">
+    <p-card header="Registrieren" styleClass="register-card">
+      <form
+        [formGroup]="registerForm"
+        (ngSubmit)="onRegister()"
+        class="flex flex-column gap-3 register-form"
+      >
+        <p-input-group>
+          <p-inputgroup-addon>
+            <i
+              [ngClass]="{
+                'p-invalid':
+                  registerForm.get('email')?.value && registerForm.controls['email'].invalid
+              }"
+              class="pi pi-at"
+            ></i>
+          </p-inputgroup-addon>
+          <input
+            pInputText
+            name="email"
+            type="text"
+            placeholder="E-Mail"
+            formControlName="email"
+            [ngClass]="{
+              'p-invalid':
+                registerForm.get('email')?.value && registerForm.controls['email'].invalid
+            }"
+            required
+          />
+        </p-input-group>
+        <p-message
+          *ngIf="registerForm.get('email')?.value && registerForm.controls['email'].invalid"
+          severity="error"
+          text="Bitte eine gültige E-Mail eingeben."
+          variant="simple"
+          size="small"
+        ></p-message>
+
+        <p-input-group>
+          <p-inputgroup-addon>
+            <i class="pi pi-user"></i>
+          </p-inputgroup-addon>
+          <input
+            pInputText
+            name="username"
+            type="text"
+            placeholder="Benutzername"
+            formControlName="username"
+            required
+          />
+        </p-input-group>
+
+        <p-password
+          id="password"
+          formControlName="password"
+          toggleMask
+          placeholder="Passwort"
+          [style]="{ width: '100%' }"
+          [inputStyle]="{ width: '100%' }"
+        />
+        <p-message
+          *ngIf="registerForm.get('password')?.value && registerForm.controls['password'].invalid"
+          severity="error"
+          text="Passwort muss mindestens 6 Zeichen lang sein."
+          variant="simple"
+          size="small"
+        ></p-message>
+
+        <p-calendar
+          id="birthDate"
+          placeholder="Geburtstag"
+          formControlName="birthDate"
+          dateFormat="dd.mm.yy"
+          showIcon
+          [style]="{ width: '100%' }"
+          [inputStyle]="{ width: '100%' }"
+        />
+        <p-message
+          *ngIf="registerForm.get('birthDate')?.value && registerForm.controls['birthDate'].invalid"
+          severity="error"
+          text="Geburtsdatum muss in der Vergangenheit liegen."
+          variant="simple"
+          size="small"
+        ></p-message>
+
+        <p-message
+          *ngIf="success$ | async"
+          severity="success"
+          text="Registrierung erfolgreich!"
+          icon="pi pi-check-circle"
+        ></p-message>
+        <p-message
+          *ngIf="error$ | async"
+          severity="error"
+          text="Registrierung nicht erfolgreich. Versuchen Sie es bitte später erneut."
+          icon="pi pi-times-circle"
+        ></p-message>
+
+        <div class="flex gap-2 mt-3 justify-content-end">
+          <p-button
+            icon="pi pi-user-plus"
+            type="submit"
+            label="Registrieren"
+            [disabled]="registerForm.invalid"
+          ></p-button>
+        </div>
+      </form>
+    </p-card>
+  </div>
+</div>

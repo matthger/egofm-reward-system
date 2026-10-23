@@ -1,0 +1,45 @@
+.avatar {
+  &-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 64px;
+    height: 64px;
+
+    .p-avatar {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.4);
+
+    &.locked {
+      background-color: rgba(0, 0, 0, 0.8);
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    &.in-badge-collection {
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+  }
+}
+
+.badge:hover .avatar-overlay.in-badge-collection {
+  background-color: rgba(0, 0, 0, 0.1);
+
+  &.locked {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: rgba(255, 255, 255, 0.9);
+  }
+}

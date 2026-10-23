@@ -1,0 +1,68 @@
+<div class="p-dialog-header px-0">
+  <span class="p-dialog-title">Aktion Info</span>
+  <p-button
+    type="button"
+    icon="pi pi-times"
+    (click)="close()"
+    styleClass="p-button p-button-icon-only p-button-secondary p-button-rounded p-button-text p-dialog-close-button"
+  ></p-button>
+</div>
+
+<h3 class="text-white text-center mt-0 mb-2">
+  {{ action.title }}
+</h3>
+<p class="opacity-60 text-center mt-0 mb-4">
+  {{ action.description }}
+</p>
+
+<ng-container *ngIf="actionLogs$ | async as actionLogs">
+  <p-table
+    [value]="actionLogs"
+    responsiveLayout="scroll"
+    class="p-datatable-sm"
+    styleClass="p-datatable-gridlines"
+    *ngIf="actionLogs.length; else actionWarning"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Erledigt am</th>
+        <th>Weitere Infos</th>
+        <th class="text-right">Punkte</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-log>
+      <tr>
+        <td>{{ log.createdAt | date : 'dd.MM.y HH:mm' : undefined : 'de' }}</td>
+        <td>
+          <ng-container *ngIf="(log.metadata | json) !== '{}'">
+            <ul class="m-0 p-0 pl-2">
+              <li *ngFor="let entry of metadataEntries(log.metadata)">
+                <strong>{{ actionMetadataLabel[entry.key] ?? entry.key }}:</strong>
+                {{ entry.value }}<span *ngIf="action.name === ActionEnum.DONATION">€</span>
+              </li>
+            </ul>
+          </ng-container>
+          <ng-container *ngIf="(log.metadata | json) === '{}'">
+            <span class="text-color-secondary">–</span>
+          </ng-container>
+        </td>
+        <td class="flex align-items-center font-semibold text-primary justify-content-end">
+          <ng-container *ngIf="action.name === ActionEnum.DONATION; else actionPoints">
+            <span class="pr-1">+{{ action.points * log.metadata.amount | number }}</span>
+          </ng-container>
+          <ng-template #actionPoints>
+            <span class="pr-1">+{{ action.points | number }}</span>
+          </ng-template>
+          <img ngSrc="assets/icons/egofm-reward-coin.png" alt="Coin" width="14" height="14" />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <ng-template #actionWarning>
+    <p-message severity="warn" [closable]="false" icon="pi pi-exclamation-circle"
+      >Diese Aktion hast du noch nicht abgeschlossen.</p-message
+    >
+  </ng-template>
+</ng-container>

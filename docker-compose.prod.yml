@@ -1,0 +1,58 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/docker/prod/Dockerfile
+    image: egofm-reward-frontend:prod
+    container_name: egofm_frontend
+    ports:
+      - "127.0.0.1:80:80"
+    restart: always
+    networks:
+      - app-network
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/docker/prod/Dockerfile
+    image: egofm-reward-backend:prod
+    container_name: egofm_backend
+    restart: always
+    environment:
+      - DB_HOST=${POSTGRES_HOST}
+      - DB_PORT=${POSTGRES_PORT}
+      - DB_NAME=${POSTGRES_DB}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - NODE_ENV=production
+      - JWT_SECRET=${JWT_SECRET}
+      - SEEDUSER_PASSWORD=${SEEDUSER_PASSWORD}
+      - TS_NODE_PROJECT=apps/backend/tsconfig.json
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: postgres:17.5
+    container_name: egofm_db
+    restart: always
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - app-network
+
+volumes:
+  pgdata:
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,16 @@
+@use 'primeflex/primeflex.scss';
+@use 'primeicons/primeicons.css';
+
+body {
+  font-family: 'Roboto', Arial, sans-serif;
+  background-color: #1f1f1f;
+  background-image: radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(31, 31, 31, 0) 20%
+    ),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 20 17' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 0 L20 5 L20 12 L10 17 L0 12 L0 5 Z M10 17 L10 34' fill='none' stroke='%23444444' stroke-width='0.5'/%3E%3C/svg%3E");
+  background-size: 100% 100%, /* for the radial gradient */ 12px 12px; /* for the hex grid */
+  background-repeat: no-repeat, repeat;
+  background-position: center, top left;
+}

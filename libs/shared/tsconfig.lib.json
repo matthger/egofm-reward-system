@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc/libs/shared",
+    "rootDir": "src",
+    "declaration": true,
+    "sourceMap": true,
+    "module": "commonjs"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts", "jest.config.ts"]
+}

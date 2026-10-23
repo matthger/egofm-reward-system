@@ -1,0 +1,119 @@
+<ng-container *ngIf="currentUser$ | async as currentUser">
+  <div class="flex justify-content-center">
+    <div style="max-width: 1200px; width: 100%">
+      <div class="my-5">
+        <div class="text-2xl font-bold text-white">Meine Belohnungen</div>
+        <p>Sammle hier Punkte und löse diese für Belohnungen ein!</p>
+      </div>
+
+      <div class="grid">
+        <div class="col-12 md:col-10 flex flex-column">
+          <p-card
+            class="h-full"
+            [style]="{ padding: '0.5rem', height: '100%', 'justify-content': 'center' }"
+          >
+            <app-level-progress
+              [showBarTitle]="false"
+              [showBarDescription]="true"
+            ></app-level-progress>
+          </p-card>
+        </div>
+        <div class="col-12 md:col-2">
+          <p-card [style]="{ padding: '0.5rem', height: '100%', 'justify-content': 'center' }">
+            <div class="flex justify-content-center align-items-center gap-2 h-full">
+              <span class="text-primary font-semibold text-xl">{{
+                currentUser.points | number
+              }}</span>
+              <img src="assets/icons/egofm-reward-coin.png" alt="Coin" width="20" height="20" />
+            </div>
+          </p-card>
+        </div>
+        <ng-container *ngIf="missingRewardClaims$ | async as missing">
+          <div class="col-12">
+            <p-message
+              *ngFor="let entry of missing"
+              severity="warn"
+              [closable]="false"
+              styleClass="mb-3"
+            >
+              <div class="flex justify-content-between align-items-center w-full">
+                <div>
+                  Du hast deine Belohnung für den Levelaufstieg in
+                  <strong>{{ entry.name }}</strong> noch nicht ausgewählt.
+                </div>
+                <p-button
+                  class="p-button-sm"
+                  label="Belohnung wählen"
+                  type="button"
+                  (click)="openMissingRewardDialog(entry)"
+                >
+                </p-button>
+              </div>
+            </p-message>
+          </div>
+        </ng-container>
+        <div class="col-12 lg:col-4">
+          <p-card header="Verdiene Belohnungen" class="reward-card">
+            <div class="mt-2 task-list">
+              <ng-container *ngFor="let action of personalActions$ | async; let last = last">
+                <div class="task-item" [ngClass]="{ completed: action.status === 'done' }">
+                  <div class="task-info">
+                    <div
+                      class="task-description cursor-pointer"
+                      pTooltip="{{ action.description }}"
+                      tooltipPosition="top"
+                      tooltipStyleClass="text-center"
+                      (click)="openActionDialog(action)"
+                      role="button"
+                      tabindex="0"
+                    >
+                      {{ action.title }}
+                    </div>
+                    <div class="task-amount">
+                      <span class="inline-flex align-items-center gap-1">
+                        <span class="font-bold text-primary">+{{ action.points }}</span>
+                        <img
+                          src="assets/icons/egofm-reward-coin.png"
+                          alt="Coin"
+                          width="14"
+                          height="14"
+                        />
+                      </span>
+                    </div>
+                  </div>
+
+                  <ng-container *ngIf="action.status === 'open'; else doneTpl">
+                    <p-button
+                      label="Erhalten"
+                      (click)="claimTask(action.actionLog?.id, action.id, currentUser.id)"
+                      [disabled]="!action.claimable"
+                    ></p-button>
+                  </ng-container>
+
+                  <ng-template #doneTpl>
+                    <div class="font-bold text-primary-700">Erledigt ✓</div>
+                  </ng-template>
+                </div>
+                <p-divider *ngIf="!last"></p-divider>
+              </ng-container>
+            </div>
+          </p-card>
+        </div>
+
+        <div class="col-12 lg:col-8">
+          <app-badge-collection></app-badge-collection>
+        </div>
+      </div>
+    </div>
+    <!--
+    <div class="col-12 lg:col-2">
+      <div class="relative w-full" style="padding-top: 200%;">
+        <img
+          src="assets/images/egofm-plus-banner.jpg"
+          alt="egoFM Plus"
+          class="absolute top-0 left-0 w-full h-full object-cover border-round" />
+      </div>
+    </div>
+    -->
+  </div>
+</ng-container>
